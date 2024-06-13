@@ -5,7 +5,8 @@ MAKEFLAGS += --no-print-directory
 CC		= gcc
 CFLAGS	= -Wall -Wextra -Werror -g
 SRC =	main.c \
-		utils.c
+		utils.c \
+		routine.c \
 
 all: $(NAME)
 
