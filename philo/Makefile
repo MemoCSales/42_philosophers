@@ -6,7 +6,6 @@ CC		= gcc
 CFLAGS	= -Wall -Wextra -Werror -g
 SRC =	main.c \
 		utils.c \
-		routine.c \
 
 all: $(NAME)
 

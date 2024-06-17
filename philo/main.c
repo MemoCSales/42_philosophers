@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:33 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/13 18:38:07 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/17 12:09:41 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ t_philo	*init_data_and_philos(char **argv)
 		free(philo);
 		return (NULL);
 	}
-	philo->data->num_started = 0;
 	if (argv[5] != NULL)
 		philo->data->number_of_meals = ft_atoi(argv[5]);
 	else
 		philo->data->number_of_meals = 0;
+	print_data_struct(philo->data);
 	if (!init_philo(philo->data))
 	{
 		free(philo->data);
@@ -72,81 +72,112 @@ int	init_philo(t_data *data)
 	while (i < data->num_philos)
 	{
 		philo_thread[i].id = i;
-		philo_thread[i].die = 0;
-		philo_thread[i].eat = 0;
-		philo_thread[i].sleep = 0;
 		philo_thread[i].last_meal = 0;
+		philo_thread[i].status = -1;
+		philo_thread[i].meals= 0;
 		philo_thread[i].total = data->num_philos;
 		philo_thread[i].data = data;
-		if (pthread_mutex_init(&philo_thread[i].fork_left, NULL))
-		{
-			free(philo_thread);
-			return (0);
-		}
-		if (pthread_mutex_init(&philo_thread[i].fork_right, NULL))
-		{
-			free(philo_thread);
-			return (0);
-		}
+		pthread_mutex_init(&philo_thread[i].fork_left, NULL);
+		pthread_mutex_init(&philo_thread[i].fork_right, NULL);
 		i++;
 	}
-	init_threads(philo_thread);
+	init_threads(philo_thread, data);
 	return (1);
 }	
 
-void	init_threads(t_philo *philo)
+void	print_data_struct(t_data *data)
+{
+	printf("Number of philosophers: %d\n", data->num_philos);
+    printf("Time to die: %d\n", data->time_to_die);
+    printf("Time to eat: %d\n", data->time_to_eat);
+    printf("Time to sleep: %d\n", data->time_to_sleep);
+    printf("Number of meals: %d\n", data->number_of_meals);
+}
+
+void	print_philo_struct(t_data *data, t_philo *philos)
+{
+	int	i = 0;
+	while (i < data->num_philos)
+	{
+		printf("i: %d\n", i);
+		printf("Philosopher ID: %d\n", philos[i].id);
+		printf("Philosopher last meal time: %d\n", philos[i].last_meal);
+		printf("Philosopher status: %d\n", philos[i].status);
+		printf("Philosopher # of meals: %d\n", philos[i].meals);
+		printf("Total of philos & forks: %d\n", philos[i].total);
+		// printf("Philosopher die time: %d\n", philos[i].die);
+		// printf("Philosopher eat time: %d\n", philos[i].eat);
+		// printf("Philosopher sleep time: %d\n", philos[i].sleep);
+		// printf("Philosopher [%d] has right fork %d\n", philos[i].id, philos[i].fork_right);
+		// printf("Philosopher [%d] has left fork %d\n", philos[i].id, philos[i].fork_left);
+		i++;
+	}
+}
+
+/**
+ * @brief This is the routine function for each philosopher in the simulation.
+ *
+ * @param arg A void pointer that should be cast to a pointer to a t_philo
+ *            structure. This structure contains the philosopher's ID, the
+ *            mutexes for their left and right forks, and a pointer to a
+ *            shared data structure.
+ *
+ * @return This function always returns NULL. It is intended to be used as a
+ *         thread routine, so the return value is ignored.
+ *
+ * The function first waits for the start_flag in the shared data structure to
+ * be set. This ensures that all philosophers start at the same time.
+ */
+void	*routine(void *arg)
+{
+	t_philo			*philo;
+
+	int	i;
+	int	start;
+
+	i = 0;
+	start = 0;
+	philo = (t_philo *)arg;
+	while (!start)
+	{
+		pthread_mutex_lock(&philo->data->mutex_start);
+		if (philo->data->start_flag)
+			start = 1;
+		pthread_mutex_unlock(&philo->data->mutex_start);
+	}
+	while (i < philo->data->number_of_meals)
+	{
+		printf("Philosopher %d is thinking\n", philo->id);
+		pthread_mutex_lock(&philo->fork_left);
+		pthread_mutex_lock(&philo->fork_right);
+		printf("Philosoppher %d is eating\n", philo->id);
+		pthread_mutex_unlock(&philo->fork_left);
+		pthread_mutex_unlock(&philo->fork_right);
+		printf("Philosopher %d is sleeping\n", philo->id);
+		i++;
+	}
+	return (NULL);
+}
+
+void	init_threads(t_philo *philo, t_data *data)
 {
 	int	i;
-	
+
 	i = 0;
-	philo->data->time_start = ft_time();
-	while (i < philo->data->num_philos)
+	while (i < data->num_philos)
 	{
 		if (pthread_create(&philo[i].th, NULL, &routine, &philo[i]) != 0)
 			return ;
 		printf("Philosopher thread [%d] is created\n", philo[i].id);
 		i++;
 	}
-}
-
-/*
-* Gets the current time in miliseconts. Uses the gettimeofday functoin to get the curren time.
-* tv_sec -> is the number of seconds since the Epoch
-* tv_usec -> is the number of microseconds past the time in tv_sec
-* @return the current time in miliseconds
-*/
-int	ft_time(void)
-{
-	struct timeval	time;
-
-	if (gettimeofday(&time, NULL) == -1)
-	{
-		printf("Error in ft_time\n");
-		return (-1);
-	}
-	return (time.tv_sec * 1000 + time.tv_usec / 1000);
-}
-
-int	error_check(int argc, char **argv)
-{
-	if (argc != 5 && argc != 6)
-		return (1);
-	if (ft_atoi(argv[1]) < 0)
-		return (1);
-	if (ft_atoi(argv[2]) < 60)
-		return (1);
-	if (ft_atoi(argv[3]) < 60)
-		return (1);
-	if (ft_atoi(argv[4]) < 60)
-		return (1);
-	if (argc == 6 && ft_atoi(argv[5]) < 1)
-		return (1);
-	return (0);
+	pthread_mutex_lock(&data->mutex_start);
+	data->start_flag = 1;
+	pthread_mutex_unlock(&data->mutex_start);
 }
 
 int main(int argc, char **argv)
 {
-	t_data	data;
 	t_philo *philos;
 	int		i;
 
@@ -155,30 +186,16 @@ int main(int argc, char **argv)
 		printf("Double check the arguments passed to the command line.\n");
 		return (1);
 	}
+			
 	philos = init_data_and_philos(argv);
-	print_data_struct(&data);		
-	// philos = init_philo(&data);
-	if (philos == NULL)
-		return (1);
-	// pthread_mutex_init(philos->mutex_stop, NULL);
-	// print_philo_struct(&data, philos);
-	// i = 0;
-	// while (i < data.num_philos)
-	// {
-	// 	if (pthread_create(&philos[i].th, NULL, &routine, &philos[i]) != 0)
-	// 		return (2);
-	// 	printf("Philosopher thread [%d] is created\n", philos[i].id);
-	// 	i++;
-	// }
 	i = 0;
-	while (i < data.num_philos)
+	while (i < philos->data->num_philos)
 	{
 		if (pthread_join(philos[i].th, NULL) != 0)
 			return (3);
 		printf("Philosopher thread [%d] is finishing execution\n", philos[i].id);
 		i++;
 	}
-	// pthread_mutex_destroy(philos->mutex_stop);
 	printf("Playing: %d\n", philos->total);
 	pthread_mutex_destroy(philos->data->mutex_stop);
 	free(philos->data->mutex_stop);
