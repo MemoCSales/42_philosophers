@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/18 17:12:35 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/18 17:30:39 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,13 @@
 # define YELLOW "\033[1;33m"
 # define ORANGE "\033[38;5;214m"
 # define DEFAULT "\033[0m"
+
+# define THINKING "is thinking"
+# define SLEEPING "is sleeping"
+# define EATING "is eating"
+# define FIRST_FORK "has taken a fork"
+# define SECOND_FORK "has taken a fork"
+# define DIED "died"
 
 typedef struct s_data t_data;
 

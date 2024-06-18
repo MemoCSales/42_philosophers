@@ -6,44 +6,11 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:33 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/18 17:13:01 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/18 17:33:41 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-
-// typedef struct s_philo
-// {
-// 	pthread_t				th;
-// 	int 					id;        // philo id
-// 	// int 					die;       // ms it takes to die
-// 	// int 					eat;       // ms it takes to eat
-// 	// int 					sleep;     // ms it takes to sleep
-// 	int 					last_meal; // time from the last meal of the philo
-// 	int 					status;    // indicates what the philo has to do
-// 	int 					meals;      // indicates the # of meals the philo has to eat
-// 	int 					total;     // total # of philos and forks
-// 	int 					*final_goal; // pointer to the shared final_goal var
-// 	pthread_mutex_t			*fork_left;
-// 	pthread_mutex_t			*fork_right;
-// 	t_data					*data;
-// }					t_philo;
-
-// typedef struct s_data
-// {
-// 	int				num_philos;
-// 	int				time_to_die;
-// 	int				time_to_eat;
-// 	int				time_to_sleep;
-// 	int				number_of_meals;
-// 	int				start_flag;
-// 	pthread_mutex_t	mutex_start;
-// 	pthread_mutex_t	mutex_dead;
-// 	pthread_mutex_t	mutex_meal;
-// 	pthread_mutex_t	mutex_print;
-// 	pthread_mutex_t	mutex_stop;
-// }					t_data;
 
 t_philo	*init_data_and_philos(char **argv)
 {
@@ -121,35 +88,6 @@ int	init_philo(t_data *data)
 	return (1);
 }	
 
-void	print_data_struct(t_data *data)
-{
-	printf("Number of philosophers: %d\n", data->num_philos);
-    printf("Time to die: %d\n", data->time_to_die);
-    printf("Time to eat: %d\n", data->time_to_eat);
-    printf("Time to sleep: %d\n", data->time_to_sleep);
-    printf("Number of meals: %d\n", data->number_of_meals);
-}
-
-void	print_philo_struct(t_data *data, t_philo *philos)
-{
-	int	i = 0;
-	while (i < data->num_philos)
-	{
-		printf("i: %d\n", i);
-		printf("Philosopher ID: %d\n", philos[i].id);
-		printf("Philosopher last meal time: %d\n", philos[i].last_meal);
-		printf("Philosopher status: %d\n", philos[i].status);
-		printf("Philosopher # of meals: %d\n", philos[i].meals);
-		printf("Total of philos & forks: %d\n", philos[i].total);
-		// printf("Philosopher die time: %d\n", philos[i].die);
-		// printf("Philosopher eat time: %d\n", philos[i].eat);
-		// printf("Philosopher sleep time: %d\n", philos[i].sleep);
-		// printf("Philosopher [%d] has right fork %d\n", philos[i].id, philos[i].fork_right);
-		// printf("Philosopher [%d] has left fork %d\n", philos[i].id, philos[i].fork_left);
-		i++;
-	}
-}
-
 /**
  * @brief This is the routine function for each philosopher in the simulation.
  *
@@ -180,19 +118,17 @@ void	*routine(void *arg)
 		pthread_mutex_lock(&philo->data->mutex_start);
 		// printf("philo->data->start_flag: %d\n", philo->data->start_flag);
 		if (philo->data->start_flag)
-		{
 			start = 1;
-		}
 		pthread_mutex_unlock(&philo->data->mutex_start);
 		ft_usleep(100);
 	}
-	printf("Philosopher %d last meal time before update: %d\n", philo->id, philo->last_meal);
+	// printf("Philosopher %d last meal time before update: %d\n", philo->id, philo->last_meal);
 	pthread_mutex_lock(&philo->data->mutex_meal);
 	philo->last_meal = ft_time() + philo->data->time_to_die;
-	printf("Last meal time: %d\n", philo->last_meal);
+	// printf("Last meal time: %d\n", philo->last_meal);
 	pthread_mutex_unlock(&philo->data->mutex_meal);
-	printf("Philosopher %d last meal time after update: %d\n", philo->id, philo->last_meal);
-exit(1);
+	// printf("Philosopher %d last meal time after update: %d\n", philo->id, philo->last_meal);
+// exit(1);
 	while (1)
 	{
 		printf("Philosopher %d is thinking\n", philo->id);
