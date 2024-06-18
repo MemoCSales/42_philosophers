@@ -6,6 +6,7 @@ CC		= gcc
 CFLAGS	= -Wall -Wextra -Werror -g
 SRC =	main.c \
 		utils.c \
+		time.c
 
 all: $(NAME)
 
@@ -51,3 +52,5 @@ CYAN = \033[0;36m
 LIGHT_BLUE = \033[1;34m
 DARK_BLUE = \033[0;34m
 DEFAULT = \033[0m
+
+# gdb --args program_name arg1 arg2 arg3
