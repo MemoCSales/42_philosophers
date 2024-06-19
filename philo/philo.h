@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/18 17:30:39 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:31:08 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct s_data
 	int				number_of_meals;
 	int				start_flag;
 	int				time;
+	int				fed;
 	pthread_mutex_t	mutex_start;
 	pthread_mutex_t	mutex_dead;
 	pthread_mutex_t	mutex_meal;
@@ -78,9 +79,19 @@ void		print_data_struct(t_data *data);
 
 // utils.c
 int					ft_atoi(const char *str);
+void	message(t_philo *philo, char *msg);
+int	philo_died(t_philo *philo);
 
 int	error_check(int argc, char **argv);
 int	ft_time(void);
 int	ft_usleep(int milisec);
+
+// eating
+int	eat(t_philo *philo);
+int	take_fork_left(t_philo *philo, char *msg);
+int	take_fork_right(t_philo *philo, char *msg);
+int	starting(t_philo *philo);
+void	sync_meal_time(t_philo *philo);
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:33 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/18 17:33:41 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:35:39 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ t_philo	*init_data_and_philos(char **argv)
 		philo->data->number_of_meals = ft_atoi(argv[5]);
 	else
 		philo->data->number_of_meals = 0;
-	print_data_struct(philo->data);
+	// print_data_struct(philo->data);
 	if (!init_philo(philo->data))
 	{
 		free(philo->data);
@@ -81,7 +81,7 @@ int	init_philo(t_data *data)
 	while (i < data->num_philos)
 	{
 		philo_thread[i].fork_right = philo_thread[(i - 1 + data->num_philos) % data->num_philos].fork_left;
-		printf("Philosopher %d has fork %p to his left and fork %p to his right\n", philo_thread[i].id, philo_thread[i].fork_left, philo_thread[i].fork_right);
+		// printf("Philosopher %d has fork %p to his left and fork %p to his right\n", philo_thread[i].id, philo_thread[i].fork_left, philo_thread[i].fork_right);
 		i++;
 	}
 	init_threads(philo_thread, data);
@@ -131,13 +131,116 @@ void	*routine(void *arg)
 // exit(1);
 	while (1)
 	{
-		printf("Philosopher %d is thinking\n", philo->id);
-		pthread_mutex_lock(philo->fork_left);
-		printf("Philosoppher %d is eating\n", philo->id);
-		pthread_mutex_unlock(philo->fork_left);
-		printf("Philosopher %d is sleeping\n", philo->id);
+		if (eat(philo))
+			break;
+		if (ft_sleep(philo))
+			break;
+		// printf("Philosopher %d is thinking\n", philo->id);
+		// pthread_mutex_lock(philo->fork_left);
+		// printf("Philosoppher %d is eating\n", philo->id);
+		// pthread_mutex_unlock(philo->fork_left);
+		// printf("Philosopher %d is sleeping\n", philo->id);
 	}
 	return (NULL);
+}
+
+int	ft_sleep(t_philo *philo)
+{
+	if (philo_died(philo) || all_eaten(philo))
+		return (1);
+	message(philo, SLEEPING);
+	ft_usleep(philo->data->time_to_sleep);
+	return (0);
+}
+
+// int	all_eaten(t_philo *philo)
+// {
+	
+// }
+
+int	eat(t_philo *philo)
+{
+	if (starting(philo))
+		return (1);
+	message(philo, EATING);
+	sync_meal_time(philo);
+	ft_usleep(philo->data->time_to_eat);
+	pthread_mutex_unlock(philo->fork_left);
+	pthread_mutex_unlock(philo->fork_right);
+	return (0);
+}
+
+void	sync_meal_time(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->mutex_stop);
+	philo->meals += 1;
+	philo->last_meal = ft_time() + philo->data->time_to_die;
+	pthread_mutex_unlock(&philo->data->mutex_stop);
+}
+
+int	starting(t_philo *philo)
+{
+	if (philo->id % 2 == 0 && philo->meals == 0)
+	{
+		message(philo, THINKING);
+		ft_usleep(philo->data->time_to_eat / 2);
+	}
+	if (philo->id % 2 == 1)
+	{
+		if (take_fork_right(philo, FIRST_FORK))
+			return (1);
+		if (take_fork_left(philo, SECOND_FORK))
+			return (pthread_mutex_unlock(philo->fork_right), 1);
+	}
+	else
+	{
+		if (take_fork_left(philo, FIRST_FORK))
+			return (1);
+		if (take_fork_right(philo, SECOND_FORK))
+			return (pthread_mutex_unlock(philo->fork_left), 1);
+	}
+	return (0);
+}
+
+int	philo_died(t_philo *philo)
+{
+	int	result;
+
+	pthread_mutex_lock(&philo->data->mutex_dead);
+	result = philo->data->dead;
+	pthread_mutex_unlock(&philo->data->mutex_dead);
+	return (result);
+}
+
+int	take_fork_right(t_philo *philo, char *msg)
+{
+	if (philo_died(philo))
+		return (1);
+	pthread_mutex_lock(philo->fork_right);
+	message(philo, msg);
+	return (0);
+}
+
+int	take_fork_left(t_philo *philo, char *msg)
+{
+	if (philo_died(philo))
+		return (1);
+	pthread_mutex_lock(philo->fork_left);
+	message(philo, msg);
+	return (0);
+}
+
+void	message(t_philo *philo, char *msg)
+{
+	int	time;
+
+	time = (ft_time() - philo->data->time);
+	pthread_mutex_lock(&philo->data->mutex_dead);
+	pthread_mutex_lock(&philo->data->mutex_stop);
+	if (!philo->data->dead && philo->data->fed == 0)
+		printf("%d %d %s\n", time, philo->id, msg);
+	pthread_mutex_unlock(&philo->data->mutex_stop);
+	pthread_mutex_unlock(&philo->data->mutex_dead);
 }
 
 void	init_threads(t_philo *philo, t_data *data)
@@ -153,7 +256,7 @@ void	init_threads(t_philo *philo, t_data *data)
 	{
 		if (pthread_create(&philo[i].th, NULL, &routine, &philo[i]) != 0)
 			return ;
-		printf("Philosopher thread [%d] is created\n", philo[i].id);
+		// printf("Philosopher thread [%d] is created\n", philo[i].id);
 		i++;
 	}
 }
@@ -165,7 +268,7 @@ int main(int argc, char **argv)
 
 	if (error_check(argc, argv))
 	{
-		printf("Double check the arguments passed to the command line.\n");
+		printf(RED"Double check the arguments passed to the command line.\n"DEFAULT);
 		return (1);
 	}
 			
