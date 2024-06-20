@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/19 19:31:08 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/20 13:17:54 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,6 @@ typedef struct s_philo
 {
 	pthread_t				th;
 	int 					id;        // philo id
-	// int 					die;       // ms it takes to die
-	// int 					eat;       // ms it takes to eat
-	// int 					sleep;     // ms it takes to sleep
 	int 					last_meal; // time from the last meal of the philo
 	int 					status;    // indicates what the philo has to do
 	int 					meals;      // indicates the # of meals the philo has to eat
@@ -92,6 +89,13 @@ int	take_fork_left(t_philo *philo, char *msg);
 int	take_fork_right(t_philo *philo, char *msg);
 int	starting(t_philo *philo);
 void	sync_meal_time(t_philo *philo);
+int	all_eaten(t_philo *philo);
+
+// sleeping
+int	ft_sleep(t_philo *philo);
+
+// thinking
+int	think(t_philo *philo);
 
 
 #endif

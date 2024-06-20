@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:33 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/19 19:35:39 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/20 13:15:04 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,13 +135,18 @@ void	*routine(void *arg)
 			break;
 		if (ft_sleep(philo))
 			break;
-		// printf("Philosopher %d is thinking\n", philo->id);
-		// pthread_mutex_lock(philo->fork_left);
-		// printf("Philosoppher %d is eating\n", philo->id);
-		// pthread_mutex_unlock(philo->fork_left);
-		// printf("Philosopher %d is sleeping\n", philo->id);
+		if (think(philo))
+			break;
 	}
 	return (NULL);
+}
+
+int	think(t_philo *philo)
+{
+	if (philo_died(philo) || all_eaten(philo))
+		return (1);
+	message(philo, THINKING);
+	return (0);
 }
 
 int	ft_sleep(t_philo *philo)
@@ -153,10 +158,15 @@ int	ft_sleep(t_philo *philo)
 	return (0);
 }
 
-// int	all_eaten(t_philo *philo)
-// {
-	
-// }
+int	all_eaten(t_philo *philo)
+{
+	int	result;
+
+	pthread_mutex_lock(&philo->data->mutex_meal);
+	result = philo->data->fed;
+	pthread_mutex_unlock(&philo->data->mutex_meal);
+	return(result);
+}
 
 int	eat(t_philo *philo)
 {
