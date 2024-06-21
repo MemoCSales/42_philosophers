@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:33 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/21 19:32:11 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/21 20:49:14 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ int	init_philo(t_data *data)
 		// printf("Philosopher %d has fork %p to his left and fork %p to his right\n", philo_thread[i].id, philo_thread[i].fork_left, philo_thread[i].fork_right);
 		i++;
 	}
+	// printf("Before init thread\n");
 	init_threads(philo_thread, data);
 	return (1);
 }	
@@ -162,7 +163,6 @@ void	*routine(void *arg)
 	// printf("Last meal time: %d\n", philo->last_meal);
 	pthread_mutex_unlock(&philo->data->mutex_meal);
 	// printf("Philosopher %d last meal time after update: %d\n", philo->id, philo->last_meal);
-// exit(1);
 	while (1)
 	{
 		if (eat(philo))
@@ -208,6 +208,7 @@ int	eat(t_philo *philo)
 		return (1);
 	message(philo, EATING);
 	sync_meal_time(philo);
+	// printf("inside eat function\n");
 	ft_usleep(philo->data->time_to_eat);
 	pthread_mutex_unlock(philo->fork_left);
 	pthread_mutex_unlock(philo->fork_right);
@@ -219,6 +220,7 @@ void	sync_meal_time(t_philo *philo)
 	pthread_mutex_lock(&philo->data->mutex_stop);
 	philo->meals += 1;
 	philo->last_meal = ft_time() + philo->data->time_to_die;
+	// printf("Meal time: %d\n", philo->last_meal);
 	pthread_mutex_unlock(&philo->data->mutex_stop);
 }
 
@@ -278,8 +280,8 @@ void	message(t_philo *philo, char *msg)
 {
 	int	time;
 
-	printf("Philo time: %d\n", philo->data->time);
-	exit(1);
+	// printf("Philo time: %d\n", philo->id);
+	// exit(1);
 	time = (ft_time() - philo->data->time);
 	pthread_mutex_lock(&philo->data->mutex_dead);
 	pthread_mutex_lock(&philo->data->mutex_stop);
@@ -313,15 +315,14 @@ int	is_dead(t_philo *philo)
 	int	i;
 	
 	i = 0;
-	printf("Philos: %d\n", philo->data->num_philos);
+	// printf("Last meal time: %d\n", philo[i].last_meal);
 	while(i < philo->data->num_philos)
 	{
 		pthread_mutex_lock(&philo->data->mutex_meal);
 		if (ft_time() >= philo[i].last_meal)
 		{
 			pthread_mutex_unlock(&philo->data->mutex_meal);
-			printf("i: %d\n", i);
-			message(&philo->data->philos[i], DIED);
+			message(&philo[i], DIED);
 			pthread_mutex_lock(&philo->data->mutex_dead);
 			philo->data->dead = 1;
 			pthread_mutex_unlock(&philo->data->mutex_dead);
@@ -368,41 +369,45 @@ int main(int argc, char **argv)
 			
 	philos = init_data_and_philos(argv);
 	if (!philos)
+		return (1);
+	if (!philos->data)
 	{
+		printf("Data structure not initialized.\n");
 		free(philos);
-		free(philos->data);
+		return (1);
 	}
 	ft_usleep(25);
-	printf("Philos: %p\n", philos);
-	while (1)
-	{
-		if (is_dead(philos) || is_full(philos))
-			break ;
-	}
-	// i = 0;
-	// while (i < philos->data->num_philos)
+	// printf("Philos: %p\n", philos);
+	// printf("debugging: %d\n", philos->data->number_of_meals);
+	// while (1)
 	// {
-	// 	while(1)
-	// 	{
-	// 		if(philos->data->dead == 1)
-	// 			break;
-	// 	}
+	// 	if (is_dead(philos) || is_full(philos))
+	// 		break ;
 	// }
 	i = 0;
 	while (i < philos->data->num_philos)
 	{
-		if (pthread_join(philos[i].th, NULL) != 0)
-			return (printf("Error joining\n"), 1);
-		i++;
+		while(1)
+		{
+			if(philos->data->dead == 1)
+				break;
+		}
 	}
+	// i = 0;
+	// while (i < philos->data->num_philos)
+	// {
+	// 	if (pthread_join(philos[i].th, NULL) != 0)
+	// 		return (printf("Error joining\n"), 1);
+	// 	i++;
+	// }
 	// return (0);
-	i = 0;
-	while (i < philos->data->num_philos)
-	{
-		pthread_mutex_destroy(philos->data->philos[i].fork_right);
-		free(philos->data->philos[i].fork_right);
-		i++;
-	}
+	// i = 0;
+	// while (i < philos->data->num_philos)
+	// {
+	// 	pthread_mutex_destroy(philos->data->philos[i].fork_right);
+	// 	free(philos->data->philos[i].fork_right);
+	// 	i++;
+	// }
 	pthread_mutex_destroy(&philos->data->mutex_stop);
 	pthread_mutex_destroy(&philos->data->mutex_meal);
 	pthread_mutex_destroy(&philos->data->mutex_start);
