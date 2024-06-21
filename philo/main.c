@@ -6,11 +6,45 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:33 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/20 13:15:04 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/21 19:32:11 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+// typedef struct s_philo
+// {
+// 	pthread_t				th;
+// 	int 					id;        // philo id
+// 	int 					last_meal; // time from the last meal of the philo
+// 	int 					status;    // indicates what the philo has to do
+// 	int 					meals;      // indicates the # of meals the philo has to eat
+// 	int 					total;     // total # of philos and forks
+// 	int 					*final_goal; // pointer to the shared final_goal var
+// 	pthread_mutex_t			*fork_left;
+// 	pthread_mutex_t			*fork_right;
+// 	t_data					*data;
+// }					t_philo;
+
+// typedef struct s_data
+// {
+// 	int 			dead;
+// 	int				num_philos;
+// 	int				time_to_die;
+// 	int				time_to_eat;
+// 	int				time_to_sleep;
+// 	int				number_of_meals;
+// 	int				start_flag;
+// 	int				time;
+// 	int				fed;
+// 	pthread_mutex_t	mutex_start;
+// 	pthread_mutex_t	mutex_dead;
+// 	pthread_mutex_t	mutex_meal;
+// 	pthread_mutex_t	mutex_print;
+// 	pthread_mutex_t	mutex_stop;
+// 	t_philo			*philos;
+// }					t_data;
+
 
 t_philo	*init_data_and_philos(char **argv)
 {
@@ -244,6 +278,8 @@ void	message(t_philo *philo, char *msg)
 {
 	int	time;
 
+	printf("Philo time: %d\n", philo->data->time);
+	exit(1);
 	time = (ft_time() - philo->data->time);
 	pthread_mutex_lock(&philo->data->mutex_dead);
 	pthread_mutex_lock(&philo->data->mutex_stop);
@@ -258,6 +294,7 @@ void	init_threads(t_philo *philo, t_data *data)
 	int	i;
 
 	philo->data->time = ft_time();
+	printf("Philo time: %d\n", philo->data->time);
 	pthread_mutex_lock(&data->mutex_start);
 	data->start_flag = 1;
 	pthread_mutex_unlock(&data->mutex_start);
@@ -269,6 +306,53 @@ void	init_threads(t_philo *philo, t_data *data)
 		// printf("Philosopher thread [%d] is created\n", philo[i].id);
 		i++;
 	}
+}
+
+int	is_dead(t_philo *philo)
+{
+	int	i;
+	
+	i = 0;
+	printf("Philos: %d\n", philo->data->num_philos);
+	while(i < philo->data->num_philos)
+	{
+		pthread_mutex_lock(&philo->data->mutex_meal);
+		if (ft_time() >= philo[i].last_meal)
+		{
+			pthread_mutex_unlock(&philo->data->mutex_meal);
+			printf("i: %d\n", i);
+			message(&philo->data->philos[i], DIED);
+			pthread_mutex_lock(&philo->data->mutex_dead);
+			philo->data->dead = 1;
+			pthread_mutex_unlock(&philo->data->mutex_dead);
+			return (1);
+		}
+		pthread_mutex_unlock(&philo->data->mutex_meal);
+		i++;
+	}
+	return (0);
+}
+
+int	is_full(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	pthread_mutex_lock(&philo->data->mutex_meal);
+	if (philo->meals == 0)
+		return (pthread_mutex_unlock(&philo->data->mutex_meal), 0);
+	pthread_mutex_unlock(&philo->data->mutex_meal);
+	while (i <  philo->data->num_philos)
+	{
+		pthread_mutex_lock(&philo->data->mutex_dead);
+		if (philo->data->philos[i].meals < philo->data->number_of_meals)
+			return (pthread_mutex_unlock(&philo->data->mutex_meal), 0);
+		pthread_mutex_unlock(&philo->data->mutex_meal);
+		i++;
+	}
+	philo->data->fed = 1;
+	return (1);
+	
 }
 
 int main(int argc, char **argv)
@@ -283,18 +367,45 @@ int main(int argc, char **argv)
 	}
 			
 	philos = init_data_and_philos(argv);
+	if (!philos)
+	{
+		free(philos);
+		free(philos->data);
+	}
+	ft_usleep(25);
+	printf("Philos: %p\n", philos);
+	while (1)
+	{
+		if (is_dead(philos) || is_full(philos))
+			break ;
+	}
+	// i = 0;
+	// while (i < philos->data->num_philos)
+	// {
+	// 	while(1)
+	// 	{
+	// 		if(philos->data->dead == 1)
+	// 			break;
+	// 	}
+	// }
 	i = 0;
 	while (i < philos->data->num_philos)
 	{
-		while(1)
-		{
-			if(philos->data->dead == 1)
-				break;
-		}
+		if (pthread_join(philos[i].th, NULL) != 0)
+			return (printf("Error joining\n"), 1);
+		i++;
 	}
-	printf("Playing: %d\n", philos->total);
+	// return (0);
+	i = 0;
+	while (i < philos->data->num_philos)
+	{
+		pthread_mutex_destroy(philos->data->philos[i].fork_right);
+		free(philos->data->philos[i].fork_right);
+		i++;
+	}
 	pthread_mutex_destroy(&philos->data->mutex_stop);
 	pthread_mutex_destroy(&philos->data->mutex_meal);
+	pthread_mutex_destroy(&philos->data->mutex_start);
 	// free(philos->data->mutex_stop);
 	return (0);
 }

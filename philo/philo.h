@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/20 13:17:54 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/21 19:11:31 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	int dead;
+	int 			dead;
 	int				num_philos;
 	int				time_to_die;
 	int				time_to_eat;
@@ -65,6 +65,7 @@ typedef struct s_data
 	pthread_mutex_t	mutex_meal;
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	mutex_stop;
+	t_philo			*philos;
 }					t_data;
 
 
@@ -96,6 +97,10 @@ int	ft_sleep(t_philo *philo);
 
 // thinking
 int	think(t_philo *philo);
+
+// checks
+int	is_full(t_philo *philo);
+int	is_dead(t_philo *philo);
 
 
 #endif
