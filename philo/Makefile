@@ -3,7 +3,7 @@ NAME	= philo
 OBJ_DIR	= obj/
 MAKEFLAGS += --no-print-directory
 CC		= gcc
-CFLAGS	= -Wall -Wextra -Werror -g
+CFLAGS	= -Wall -Wextra -Werror -g -lpthread
 SRC =	main.c \
 		utils.c \
 		time.c
@@ -36,8 +36,9 @@ re: fclean all
 norminette: 
 		norminette $(SRC) philo.h
 
-va:
-		valgrind --leak-check=full --trace-children=yes --suppressions=valgrind.supp  ./philo
+val:
+		# valgrind --tool=helgrind ./philo 5 450 200 200 5
+		valgrind --tool=helgrind ./philo 2 410 200 200
 		
 
 .PHONY: all clean fclean re

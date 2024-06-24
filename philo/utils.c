@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 17:18:58 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/18 17:25:26 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:02:14 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,7 @@ void	print_philo_struct(t_data *data, t_philo *philos)
 		printf("i: %d\n", i);
 		printf("Philosopher ID: %d\n", philos[i].id);
 		printf("Philosopher last meal time: %d\n", philos[i].last_meal);
-		printf("Philosopher status: %d\n", philos[i].status);
 		printf("Philosopher # of meals: %d\n", philos[i].meals);
-		printf("Total of philos & forks: %d\n", philos[i].total);
 		// printf("Philosopher die time: %d\n", philos[i].die);
 		// printf("Philosopher eat time: %d\n", philos[i].eat);
 		// printf("Philosopher sleep time: %d\n", philos[i].sleep);
