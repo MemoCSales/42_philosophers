@@ -5,6 +5,9 @@ MAKEFLAGS += --no-print-directory
 CC		= gcc
 CFLAGS	= -Wall -Wextra -Werror -g -lpthread
 SRC =	main.c \
+		eating.c \
+		init_data.c \
+		routine.c \
 		utils.c \
 		time.c
 

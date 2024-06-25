@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/24 19:51:58 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/25 18:53:19 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,11 @@ typedef struct s_data
 
 t_philo					*init_data(char **argv);
 int						init_philo(t_data *data);
+int						philos_initialization(t_philo *philo_thread, t_data *data);
 void					init_threads(t_philo *philo, t_data *data);
 void					*routine(void *arg);
-void					print_data_struct(t_data *data);
+int						join_and_destroys(t_philo *philos);
+int						mutex_init(t_philo *philo);
 
 // utils.c
 int						ft_atoi(const char *str);
@@ -98,5 +100,7 @@ int						think(t_philo *philo);
 // checks
 int						is_full(t_philo *philo);
 int						is_dead(t_philo *philo);
+int						cleanup_simulation(t_philo *philos);
+int						check_arguments(int argc, char **argv);
 
 #endif
