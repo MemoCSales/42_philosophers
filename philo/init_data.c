@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 17:34:46 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/25 19:03:44 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:41:52 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ t_philo	*init_data(char **argv)
 		return (NULL);
 	}
 	philo->data->num_philos = ft_atoi(argv[1]);
-	philo->data->time_to_die = ft_atoi(argv[2]);
-	philo->data->time_to_eat = ft_atoi(argv[3]);
-	philo->data->time_to_sleep = ft_atoi(argv[4]);
+	philo->data->time_to_die = (int64_t)ft_atoi(argv[2]);
+	philo->data->time_to_eat = (int64_t)ft_atoi(argv[3]);
+	philo->data->time_to_sleep = (int64_t)ft_atoi(argv[4]);
 	philo->data->dead = 0;
 	philo->data->fed = 0;
 	if (mutex_init(philo) != 0)
@@ -44,7 +44,8 @@ int	mutex_init(t_philo *philo)
 {
 	if (pthread_mutex_init(&philo->data->mutex_dead, NULL) != 0
 		|| pthread_mutex_init(&philo->data->mutex_meal, NULL) != 0
-		|| pthread_mutex_init(&philo->data->mutex_start, NULL) != 0)
+		|| pthread_mutex_init(&philo->data->mutex_start, NULL) != 0
+		|| pthread_mutex_init (&philo->data->mutex_time, NULL) != 0)
 	{
 		free(philo->data);
 		free(philo);
@@ -74,7 +75,6 @@ int	init_philo(t_data *data)
 		// printf("Philosopher %d has fork %p to his left and fork %p to his right\n", philo_thread[i].id, philo_thread[i].fork_left, philo_thread[i].fork_right);
 		i++;
 	}
-	// printf("Before init thread\n");
 	data->philos = philo_thread;
 	init_threads(philo_thread, data);
 	return (1);
@@ -88,9 +88,9 @@ int	philos_initialization(t_philo *philo_thread, t_data *data)
 	while (i < data->num_philos)
 	{
 		philo_thread[i].id = i;
-		philo_thread[i].last_meal = 0;
+		philo_thread[i].last_meal = ft_time();
 		philo_thread[i].meals = 0;
-		philo_thread[i].dead = &data->dead;
+		philo_thread[i].dead = 0;
 		philo_thread[i].data = data;
 		philo_thread[i].fork_left = malloc(sizeof(pthread_mutex_t));
 		if (!philo_thread[i].fork_left || pthread_mutex_init(philo_thread[i].fork_left, NULL) != 0)
@@ -104,7 +104,7 @@ int	philos_initialization(t_philo *philo_thread, t_data *data)
 			return (0);
 		}
 		// printf("Philosopher %d initialized with last meal time: %d\n", philo_thread[i].id, philo_thread[i].last_meal);
-		i++;;
+		i++;
 	}
 	return (1);
 }

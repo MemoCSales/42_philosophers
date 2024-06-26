@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:28:56 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/25 18:35:22 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:14:13 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	start = 0;
 
-	philo->last_meal = ft_time() + philo->data->time_to_die;
+	philo->last_meal = ft_time();
 	while (!start)
 	{
 		pthread_mutex_lock(&philo->data->mutex_start);
@@ -79,7 +79,9 @@ int	eat(t_philo *philo)
 	message(philo, EATING);
 	sync_meal_time(philo);
 	ft_usleep(philo->data->time_to_eat);
+	// printf("Philosopher: %d releases left fork\n", philo->id);
 	pthread_mutex_unlock(philo->fork_left);
+	// printf("Philosopher: %d releases right fork\n", philo->id);
 	pthread_mutex_unlock(philo->fork_right);
 	return (0);
 }

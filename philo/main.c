@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:33 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/25 18:56:40 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:41:17 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	init_threads(t_philo *philo, t_data *data)
 	i = 0;
 	while (i < data->num_philos)
 	{
-		if (pthread_create(&philo[i].th, NULL, &routine, &philo[i]) != 0)
+		if (pthread_create(&philo[i].th, NULL, routine, &philo[i]) != 0)
 			return ;
 		// printf("Philosopher thread [%d] is created\n", philo[i].id);
 		i++;
@@ -58,15 +58,41 @@ void	init_threads(t_philo *philo, t_data *data)
  * @param philo Pointer to the philosopher's structure.
  * @return 1 if dead, otherwise 0.
  */
+// int	is_dead(t_philo *philo)
+// {
+// 	int	i;
+	
+// 	pthread_mutex_lock(&philo->data->mutex_meal);
+// 	i = 0;
+// 	while(i < philo->data->num_philos)
+// 	{
+// 		if (ft_time() > philo->data->philos[i].last_meal + philo->data->time_to_die)
+// 		{
+// 			message(&philo->data->philos[i], DIED);
+// 			philo->data->dead = 1;
+// 			pthread_mutex_unlock(&philo->data->mutex_meal);
+// 			pthread_mutex_lock(&philo->data->mutex_dead);
+// 			philo->data->dead = 1;
+// 			pthread_mutex_unlock(&philo->data->mutex_dead);
+// 			return (1);
+// 		}
+// 		i++;
+// 	}
+// 	pthread_mutex_unlock(&philo->data->mutex_meal);
+// 	return (0);
+// }
+
 int	is_dead(t_philo *philo)
 {
 	int	i;
+	int	current_time;
 	
 	pthread_mutex_lock(&philo->data->mutex_meal);
+	current_time = ft_time();
 	i = 0;
 	while(i < philo->data->num_philos)
 	{
-		if (ft_time() >= philo->data->philos[i].last_meal)
+		if (current_time > philo->data->philos[i].last_meal + philo->data->time_to_die)
 		{
 			pthread_mutex_unlock(&philo->data->mutex_meal);
 			message(&philo[i], DIED);
@@ -140,7 +166,7 @@ int main(int argc, char **argv)
 		free(philos);
 		return (1);
 	}
-	// ft_usleep(100);
+	ft_usleep(100);
 	while (1)
 	{
 		if (is_dead(philos->data->philos) || is_full(philos->data->philos))

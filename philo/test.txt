@@ -1,0 +1,21 @@
+NOT WORKING:
+    ./philo 2 310 200 100
+    0 0 has taken a fork
+    0 0 has taken a fork
+    0 0 is eating
+    Philosopher 0 Meals 1
+    0 1 is thinking
+    200 0 is sleeping
+    200 1 has taken a fork
+    200 1 has taken a fork
+    200 1 is eating
+    Philosopher 1 Meals 1
+    300 0 is thinking
+    311 0 died <--------------------more than 10ms 
+
+
+WORKING:
+    ./philo 5 800 200 200
+    ./philo 5 800 200 200 7
+    ./philo 4 410 200 200
+    ./philo 1 800 200 200

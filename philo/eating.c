@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 17:38:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/25 18:00:31 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/26 20:31:34 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	sync_meal_time(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->mutex_meal);
 	philo->meals += 1;
-	philo->last_meal = ft_time() + philo->data->time_to_die;
-	printf("Philosopher %d Meals %d\n", philo->id, philo->meals);
+	philo->last_meal = ft_time();
+	// printf("Philosopher %d Meals %d\n", philo->id, philo->meals);
 	pthread_mutex_unlock(&philo->data->mutex_meal);
 }
 
@@ -42,6 +42,8 @@ void	sync_meal_time(t_philo *philo)
  */
 int	starting(t_philo *philo)
 {
+	if (philo->data->num_philos == 1)
+		return (handle_1_philo(philo));
 	if (philo->id % 2 == 1 && philo->meals == 0)
 	{
 		message(philo, THINKING);
@@ -124,4 +126,14 @@ int	all_eaten(t_philo *philo)
 	result = philo->data->fed;
 	pthread_mutex_unlock(&philo->data->mutex_meal);
 	return (result);
+}
+
+int	handle_1_philo(t_philo *philo)
+{
+	message(philo, THINKING);
+	take_fork_left(philo, FIRST_FORK);
+	// ft_usleep(philo->data->time_to_die);
+	sync_meal_time(philo);
+	pthread_mutex_unlock(philo->fork_left);
+	return (1);
 }

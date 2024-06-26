@@ -41,7 +41,9 @@ norminette:
 
 val:
 		# valgrind --tool=helgrind ./philo 5 450 200 200 5
-		valgrind --tool=helgrind ./philo 2 410 200 200
+		# valgrind --tool=drd -s ./philo 5 800 200 200
+		valgrind --tool=helgrind -s ./philo 1 800 200 200
+
 		
 
 .PHONY: all clean fclean re

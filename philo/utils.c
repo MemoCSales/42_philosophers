@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 17:18:58 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/25 19:01:46 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:46:45 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	message(t_philo *philo, char *msg)
 {
 	int	time;
 
-	time = (ft_time() - philo->data->time);
+	time = ft_time() - get_start_time(philo->data);
 	pthread_mutex_lock(&philo->data->mutex_meal);
 	pthread_mutex_lock(&philo->data->mutex_dead);
 	if (!philo->data->dead && philo->data->fed == 0)

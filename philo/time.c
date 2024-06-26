@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/18 12:26:53 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/18 12:33:51 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:25:32 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ft_time(void)
  * @brief Pauses the execution of the program for a specified number of milliseconds.
  *
  * This function uses a while loop to pause the program until the specified number
- * of milliseconds has passed. It uses the get_time function to get the current time
+ * of milliseconds has passed. It uses the ft_time function to get the current time
  * and usleep to pause the program.
  *
  * @param milisec The number of milliseconds to pause the program.
@@ -42,10 +42,26 @@ int	ft_time(void)
  */
 int	ft_usleep(int milisec)
 {
-	int	start;
+	int	start_time;
+	int	current_time;
 
-	start = ft_time();
-	while (ft_time() < start + milisec)
-		usleep(1000);
+	start_time = ft_time();
+	while (1)
+	{
+		current_time = ft_time();
+		if ((current_time - start_time) >= milisec)
+			break;
+		usleep(100);
+	}
 	return (0);
+}
+
+int	get_start_time(t_data *data)
+{
+	int	time;
+
+	pthread_mutex_lock(&data->mutex_time);
+	time = data->time;
+	pthread_mutex_unlock(&data->mutex_time);
+	return (time);
 }

@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/25 18:53:19 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:26:13 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <stdint.h>
 
 # define RED "\033[1;31m"
 # define GREEN "\033[1;32m"
@@ -63,6 +64,9 @@ typedef struct s_data
 	pthread_mutex_t		mutex_meal;
 	pthread_mutex_t		mutex_start;
 	pthread_mutex_t		mutex_print;
+	pthread_mutex_t		mutex_time;
+	pthread_mutex_t		mutex_last_eat_time;
+	pthread_mutex_t		mutex_die;
 	t_philo				*philos;
 }						t_data;
 
@@ -82,6 +86,7 @@ int						philo_died(t_philo *philo);
 int						error_check(int argc, char **argv);
 int						ft_time(void);
 int						ft_usleep(int milisec);
+int						get_start_time(t_data *data);
 
 // eating
 int						eat(t_philo *philo);
@@ -100,7 +105,6 @@ int						think(t_philo *philo);
 // checks
 int						is_full(t_philo *philo);
 int						is_dead(t_philo *philo);
-int						cleanup_simulation(t_philo *philos);
-int						check_arguments(int argc, char **argv);
+int						handle_1_philo(t_philo *philo);
 
 #endif
