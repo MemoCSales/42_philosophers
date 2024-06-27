@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 17:28:56 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/26 16:14:13 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:04:51 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,33 +28,21 @@
  */
 void	*routine(void *arg)
 {
-	t_philo			*philo;
-	int				start;
+	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	start = 0;
-
 	philo->last_meal = ft_time();
-	while (!start)
-	{
-		pthread_mutex_lock(&philo->data->mutex_start);
-		if (philo->data->start_flag)
-			start = 1;
-		pthread_mutex_unlock(&philo->data->mutex_start);
-	}
-	// printf("Philosopher %d last meal time before update: %d\n", philo->id, philo->last_meal);
 	pthread_mutex_lock(&philo->data->mutex_meal);
 	philo->last_meal = ft_time() + philo->data->time_to_die;
 	pthread_mutex_unlock(&philo->data->mutex_meal);
-	// printf("Philosopher %d last meal time after update: %d\n", philo->id, philo->last_meal);
 	while (1)
 	{
 		if (eat(philo))
-			break;
+			break ;
 		if (ft_sleep(philo))
-			break;
+			break ;
 		if (think(philo))
-			break;
+			break ;
 	}
 	return (NULL);
 }
@@ -79,9 +67,7 @@ int	eat(t_philo *philo)
 	message(philo, EATING);
 	sync_meal_time(philo);
 	ft_usleep(philo->data->time_to_eat);
-	// printf("Philosopher: %d releases left fork\n", philo->id);
 	pthread_mutex_unlock(philo->fork_left);
-	// printf("Philosopher: %d releases right fork\n", philo->id);
 	pthread_mutex_unlock(philo->fork_right);
 	return (0);
 }
@@ -113,7 +99,8 @@ int	ft_sleep(t_philo *philo)
  * This function is called when a philosopher is in the thinking state. It
  * checks if the philosopher has died or if all philosophers have eaten the
  * required number of meals. If neither condition is met, it logs the thinking
- * action with `message(philo, THINKING)`. This function prepares the philosopher
+ * action with `message(philo,
+	THINKING)`. This function prepares the philosopher
  * for the next cycle of actions (eating, sleeping, thinking).
  *
  * @param philo Pointer to the philosopher structure.

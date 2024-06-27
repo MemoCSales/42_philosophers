@@ -9,6 +9,7 @@ SRC =	main.c \
 		init_data.c \
 		routine.c \
 		utils.c \
+		utils2.c \
 		time.c
 
 all: $(NAME)
@@ -40,9 +41,12 @@ norminette:
 		norminette $(SRC) philo.h
 
 val:
-		# valgrind --tool=helgrind ./philo 5 450 200 200 5
+		# valgrind --tool=helgrind -s ./philo 1 800 200 200
 		# valgrind --tool=drd -s ./philo 5 800 200 200
-		valgrind --tool=helgrind -s ./philo 1 800 200 200
+		# valgrind --tool=helgrind ./philo 5 450 200 200 5
+		# valgrind --leak-check=full -s ./philo 5 450 200 200 5
+		# valgrind --leak-check=full -s ./philo 5 800 200 200
+		valgrind --leak-check=full -s ./philo 1 800 200 200
 
 		
 

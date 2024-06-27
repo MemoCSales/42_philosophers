@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/18 12:26:53 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/26 17:25:32 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:08:13 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 /**
  * @brief Gets the current time in milliseconds.
  *
- * This function uses the gettimeofday function to get the current time, which is
- * then converted to milliseconds. If gettimeofday encounters an error, an error
- * message is printed.
+ * This function uses the gettimeofday function to get the current time,
+ * which is then converted to milliseconds.
+ * If gettimeofday encounters an error, an error message is printed.
  *
  * @return The current time in milliseconds.
  */
 int	ft_time(void)
 {
-	struct	timeval	time;
+	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) == -1)
 		printf("Error with gettimeofday\n");
@@ -31,11 +31,12 @@ int	ft_time(void)
 }
 
 /**
- * @brief Pauses the execution of the program for a specified number of milliseconds.
- *
- * This function uses a while loop to pause the program until the specified number
- * of milliseconds has passed. It uses the ft_time function to get the current time
- * and usleep to pause the program.
+
+ * @brief Pauses the execution of the program for a 
+ * specified number of milliseconds. This function uses a while loop to pause 
+ * the program until the specified number of milliseconds has passed.
+ * It uses the ft_time function to get the current time and 
+ * usleep to pause the program.
  *
  * @param milisec The number of milliseconds to pause the program.
  * @return Always returns 0.
@@ -50,7 +51,7 @@ int	ft_usleep(int milisec)
 	{
 		current_time = ft_time();
 		if ((current_time - start_time) >= milisec)
-			break;
+			break ;
 		usleep(100);
 	}
 	return (0);

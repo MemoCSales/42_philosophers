@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 17:18:58 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/26 17:46:45 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/27 13:59:52 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,9 @@
  * This function interprets an integer value in a byte string pointed to by str.
 
  * Discards any whitespace characters until the first non-whitespace character is
- * found,
-	then takes as many characters as possible to form a valid integer number
+ * found,then takes as many characters as possible to form a valid integer number
 
- * representation and converts them to an integer value. The valid integer 
+ * representation and converts them to an integer value. The valid integer
  * consists of an optional plus or minus sign followed by at least one digit.
  *
  * @param str A pointer to the byte string to be interpreted.

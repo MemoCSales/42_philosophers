@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:47:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/26 17:26:13 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:06:31 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 # define PHILO_H
 
 # include <pthread.h>
+# include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include <stdint.h>
 
 # define RED "\033[1;31m"
 # define GREEN "\033[1;32m"
@@ -39,10 +39,10 @@ typedef struct s_data	t_data;
 typedef struct s_philo
 {
 	pthread_t			th;
-	int 				id; // philo id
+	int					id;
 	int					*dead;
-	int 				last_meal; // time from the last meal of the philo
-	int 				meals;     // indicates the # of meals the philo has to eat
+	int					last_meal;
+	int					meals;
 	pthread_mutex_t		*fork_left;
 	pthread_mutex_t		*fork_right;
 	t_data				*data;
@@ -72,7 +72,8 @@ typedef struct s_data
 
 t_philo					*init_data(char **argv);
 int						init_philo(t_data *data);
-int						philos_initialization(t_philo *philo_thread, t_data *data);
+int						philos_initialization(t_philo *philo_thread,
+							t_data *data);
 void					init_threads(t_philo *philo, t_data *data);
 void					*routine(void *arg);
 int						join_and_destroys(t_philo *philos);
@@ -106,5 +107,7 @@ int						think(t_philo *philo);
 int						is_full(t_philo *philo);
 int						is_dead(t_philo *philo);
 int						handle_1_philo(t_philo *philo);
+void					check_if_dead_or_full(t_philo *philos);
+int						check_initialization(t_philo *philos);
 
 #endif

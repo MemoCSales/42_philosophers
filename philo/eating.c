@@ -6,7 +6,7 @@
 /*   By: mcruz-sa <mcruz-sa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 17:38:43 by mcruz-sa          #+#    #+#             */
-/*   Updated: 2024/06/26 20:31:34 by mcruz-sa         ###   ########.fr       */
+/*   Updated: 2024/06/27 13:51:02 by mcruz-sa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,14 +126,4 @@ int	all_eaten(t_philo *philo)
 	result = philo->data->fed;
 	pthread_mutex_unlock(&philo->data->mutex_meal);
 	return (result);
-}
-
-int	handle_1_philo(t_philo *philo)
-{
-	message(philo, THINKING);
-	take_fork_left(philo, FIRST_FORK);
-	// ft_usleep(philo->data->time_to_die);
-	sync_meal_time(philo);
-	pthread_mutex_unlock(philo->fork_left);
-	return (1);
 }
