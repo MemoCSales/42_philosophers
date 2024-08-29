@@ -2,21 +2,11 @@
     <h1>Dining Philosophers Problem</h1>
 </div>
 
-### Table of contents
-<p align="center">
-<a href="#Explaining-the-Problem">Explaining the Problem</a> &#xa0; | &#xa0;
-<a href="#The-Challenge">The Challenge</a> &#xa0; | &#xa0;
-<a href="#Key-Concepts">Key Concepts</a> &#xa0; | &#xa0;
-<a href="#Building-and-Running">Building and Running</a> &#xa0; | &#xa0;
-<a href="#Example-tests">Example tests</a> &#xa0; | &#xa0;
-<a href="#Conclusion">Conclusion</a> &#xa0; | &#xa0;
-</p>
-
 * [Explaining the Problem](#Explaining-the-Problem)
-* [The-Challenge](#The Challenge)
-* [Key-Concepts](#Key Concepts)
-* [Building-and-Running](#Building and Running)
-* [Example-tests](#Example tests)
+* [The-Challenge](#The-Challenge)
+* [Key-Concepts](#Key-Concepts)
+* [Building-and-Running](#Building-and-Running)
+* [Example-tests](#Example-tests)
 * [Conclusion](#Conclusion)
 
 ## Explaining the Problem
