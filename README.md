@@ -2,6 +2,8 @@
     <h1>Dining Philosophers Problem</h1>
 </div>
 
+### Table of contents
+
 * [Explaining the Problem](#Explaining-the-Problem)
 * [The-Challenge](#The-Challenge)
 * [Key-Concepts](#Key-Concepts)
