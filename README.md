@@ -4,11 +4,20 @@
 
 ### Table of contents
 <p align="center">
+<a href="#Explaining-the-Problem">Explaining the Problem</a> &#xa0; | &#xa0;
 <a href="#The-Challenge">The Challenge</a> &#xa0; | &#xa0;
-<a href="#The-Modules">The Modules</a> &#xa0; | &#xa0;
-<a href="#CPP_00">CPP_00</a> &#xa0; | &#xa0;
-<a href="#CPP_01">CPP_01</a> &#xa0; | &#xa0;
+<a href="#Key-Concepts">Key Concepts</a> &#xa0; | &#xa0;
+<a href="#Building-and-Running">Building and Running</a> &#xa0; | &#xa0;
+<a href="#Example-tests">Example tests</a> &#xa0; | &#xa0;
+<a href="#Conclusion">Conclusion</a> &#xa0; | &#xa0;
 </p>
+
+* [Explaining the Problem](#Explaining-the-Problem)
+* [The-Challenge](#The Challenge)
+* [Key-Concepts](#Key Concepts)
+* [Building-and-Running](#Building and Running)
+* [Example-tests](#Example tests)
+* [Conclusion](#Conclusion)
 
 ## Explaining the Problem
 The Dining Philosophers Problem is a classic synchronization problem involving philosophers sitting at a roung table with a fork placed between each pair of abjacent philosophers. Each philosopher must alternately think, eat, and sleep. 
@@ -41,15 +50,33 @@ Let's understand what are threads and mutexes first:
 
  ## Building and Running
  Take a look at this project.
- 
+
+ 1. Git clone:
     ```
     $ git clone https://github.com/MemoCSales/42_philosophers.git
     ```
 
-Build and run:
+ 2. Build and run:
 
-    ````
+    ```
     $ cd 42_philosophers/philo/
     $ make
     $ ./philo <number_of_philosophers> <time_to_die> <time_to_eat> <time_to_sleep> [number_of_times_each_philosopher_must_eat]
     ```
+
+## Example tests
+ 1. The philosopher should not eat and should die
+    ````
+    $ ./philo 1 800 200 200
+    ````
+ 2. No philosopher should die
+    ````
+    $ ./philo 5 800 200 200
+    ````
+ 3. One philosopher should die
+    ````
+    $ ./philo 4 310 200 100
+    ````
+
+## Conclusion
+This project gave me a practical implementation of the Dinning Philosopher Problem by understanding the usage of threads and mutexes for synchronization in C. It addresses the challenges of deadlock and starvation, ensuring that all philosophers can eat and think without interference.
